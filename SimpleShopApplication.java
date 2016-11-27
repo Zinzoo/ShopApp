@@ -6,6 +6,27 @@
  * 	Data: 30 pazdziernika 2016
  */
 
+/**
+ * Ta klasa reprezentuje aplikacje sterujaca dzialaniem sklepu oraz zawierajaca w sobie metode main
+ * <br>
+ * 
+ * Przechowuje ona teksty bedace:
+ * <ul>
+ * 	<li> Wiadomosc powitalna
+ * 	<li> Menu glownym
+ * 	<li> Menu konta klienta
+ *  <li> Menu konta admina
+ *  <li> Menu edycji magazynu
+ *  <li> Menu listy zyskow
+ * </ul>
+ * <br>
+ * Oraz steruje dzialaniem calej aplikacji poprzez:
+ * <ul>
+ * 	<li> Zapisywanie i wczytywanie list klientow, przedmiotow oraz admina
+ * 	<li> Operowanie na petlach sterujacych poruszaniem sie po menu
+ * 	<li> Komunikacje z uzytkownikiem poprzez wyswietlanie komunikatow w zaleznosci od wykonywanej czynnosci
+ * </ul>
+ */
 public class SimpleShopApplication {
 	
 	public static void main(String[] args){
@@ -17,18 +38,27 @@ public class SimpleShopApplication {
 	private UserDialog UI = new JOptionPaneUserDialog();
 	
 
+	/**
+	 * Lancuch znakow bedacy wiadomoscia powitalna
+	 */
 	private static final String GREETING_MESSAGE =
 			"Program Simple Shop\n" +
 			"Autor: Miko³aj Brukiewicz\n" +
 			"Data: 21 paziernika 2016 r.\n";
 
+	/**
+	 * Lancuch znakow reprezentujacy menu glowne
+	 */
 	private static final String SHOP_MENU = 
 			"Sklep Alkoholowy Promil - M E N U   G L O W N E      \n" +
 			"1 - Utwórz nowe konto              \n" +
 			"2 - Zaloguj siê do konta           \n" + 
 			"3 - Zaloguj sie jako sprzedawca	\n" +
 			"0 - Zakoncz program                \n";		
-		
+	
+	/**
+	 * Lancuch znakow reprezentujacy menu konta klienta
+	 */
 	private static final String ACCOUNT_MENU =
 			"1 - Wplac na konto             \n" +
 			"2 - Informacje o tym koncie    \n" +
@@ -39,6 +69,9 @@ public class SimpleShopApplication {
 			"7 - Zakup wybrany alkohol      \n" +
 			"0 - Wyloguj sie z konta        \n";
 	
+	/**
+	 * Lancuch znakow reprezentujacy menu konta admina
+	 */
 	private static final String OWNER_MENU =
 			"Jestes zalogowany jako sprzedawca     \n\n" +
 			"1 - Dodaj nowy towar do magazynu        \n" +
@@ -49,28 +82,55 @@ public class SimpleShopApplication {
 			"6 - Zmien haslo                         \n" +
 			"0 - Wyloguj sie z konta                 \n";
 
+	/**
+	 * Lancuch znakow reprezentujacy menu edycji magazynu
+	 */
 	private static final String STOCK_MENU =
 			"1 - Zmien cene przedmiotu      \n" +
 			"2 - Uzupelnij stan magazynu    \n" +
 			"3 - Wycofaj towar z oferty     \n" +
 			"0 - Wróc do poprzedniego Menu  \n";
 	
+	/**
+	 * Lancuch znakow reprezentujacy menu zyskow
+	 */
 	private static final String EARNINGS_MENU =
 			"1 - Wyczysc historie \n" +
 			"0 - Wroc do poprzedniego menu \n";
 	
-	
+	/**
+	 * Nazwa pliku przechowujacego tablice kont klientow
+	 */
 	private static final String CLIENT_DATA_FILE_NAME = "SimpleShopClients.BIN";
+	
+	/**
+	 * Nazwa pliku przechowujacego tablice przedmiotow dostepnych w sklepie
+	 */
 	private static final String ITEMS_DATA_FILE_NAME = "SimpleShopItems.BIN";
+	
+	/**
+	 * Nazwa pliku przechowujacego tablice zawierajaca konto admina
+	 */
 	private static final String ADMIN_DATA_FILE_NAME = "adminFile.BIN";
+	
+	/**
+	 * Nazwa pliku przechowujacego tablice przedmiotow zakupionych przez klientow
+	 */
 	private static final String PROFIT_DATA_FILE_NAME = "earnings.BIN";
 	
+	/**
+	 * Wywolanie konstruktora klasu Shop i przypisanie go do zmiennej typu Shop
+	 */
 	private Shop shop = new Shop();
 	
 	public SimpleShopApplication(){
 		UI.printMessage(GREETING_MESSAGE);
 		
-			
+		/**
+		 * Blok try catch ktorego zadaniem jest wczytanie tablic z kontami klientow, towarami dostepnymi w sklepie, zyskami sklepu oraz z kontem admina
+		 * <br>
+		 * Blad jest zglaszany kiedy pliki nie moga zostac wczytane	
+		 */	
 		try {
 			shop.loadClientListFromFile(CLIENT_DATA_FILE_NAME);
 			UI.printMessage("Klienci zostali wczytani z pliku " + CLIENT_DATA_FILE_NAME);
@@ -83,6 +143,13 @@ public class SimpleShopApplication {
 			UI.printErrorMessage(e.getMessage());
 		}		
 		
+		/**
+		 * Blok try carch ktorego zadaniem jest:
+		 * <ul>
+		 *  <li> Sprawdzenie czy istnieje juz konto admina
+		 *  <li> Utworzenie go jezeli nie istnieje, oraz przypisanie hasla 'admin1' jako domyslnego
+		 * </ul>
+		 */
 		try{
 			if(shop.findAccount("admin") == null)
 			{
@@ -94,6 +161,17 @@ public class SimpleShopApplication {
 			UI.printErrorMessage(e.getMessage());
 		}
 		
+		/**
+		 * Petla operujaca poruszaniem sie po menu glownym
+		 * <br>
+		 * <ul>
+		 *  <li> 0 - Zapis obecnych tablic oraz zakonczenie dzialania programu
+		 *  <li> 1 - Utworzenie nowego konta
+		 *  <li> 2 - Logowanie
+		 *  <li> 3 - Logowanie jako admin
+		 *  <li> 4 - Wypisuje liste klientow (Nie mam pojecia co to tutaj robi)
+		 *  </ul>
+		 */
 		while(true){
 			switch(UI.enterInt(SHOP_MENU))	
 			{
@@ -140,10 +218,24 @@ public class SimpleShopApplication {
 		}
 	}
 	
+	/**
+	 * Metoda komunikujaca sie z uzytkownikiem oraz wywolujaca metode tworzaca nowe konto
+	 */
 	public void newUser()
 	{
+		/**
+		 * Login nowego konta
+		 */
 		String pesel;
+		
+		/**
+		 * Haslo nowego konta
+		 */
 		String password;
+		
+		/**
+		 * Nowe konto
+		 */
 		Client newClient;
 		
 		while(true)
@@ -167,10 +259,24 @@ public class SimpleShopApplication {
 		
 	}
 	
+	/**
+	 * Metoda komunikujaca sie z uzytkownikiem oraz obslugujaca funkcje logowania sie do konta
+	 */
 	public void logIn()
 	{
+		/**
+		 * Login konta
+		 */
 		String login;
+		
+		/**
+		 * Haslo
+		 */
 		String password;
+		
+		/**
+		 * Zmienna typu Client, ktorej zostaje przypisane konto uzytkownika ktory chce sie zalogowac (jezeli istnieje) 
+		 */
 		Client client;
 		
 		UI.printMessage("Logowanie do konta");
@@ -186,6 +292,19 @@ public class SimpleShopApplication {
 		
 		if(client.checkPassword(password))
 		{
+			/**
+			 * Petla operujaca poruszaniem sie po menu konta klienta
+			 * <br>
+			 * <ul>
+			 *  <li> 0 - Wylogowanie
+			 *  <li> 1 - Dodanie nowych srodkow
+			 *  <li> 2 - Wyswietlenie informacji o tym koncie
+			 *  <li> 3 - Zmiana hasla
+			 *  <li> 4 - Zmiana nazwy konta
+			 *  <li> 5 - Usuniecie konta
+			 *  <li> 6 - Przegladanie ofery sklepu
+			 *  <li> 7 - Zakup przedmiotu
+			 */
 			while(true)
 			{
 				try{
@@ -261,10 +380,25 @@ public class SimpleShopApplication {
 		}else	UI.printErrorMessage("Bledne haslo");
 	}
 	
+	
+	/**
+	 * Metoda komunikujaca sie z uzytkownikiem oraz obslugujaca funkcje logowania sie do konta jako admin
+	 */
 	public void adminLogIn()
 	{
+		/**
+		 * Login konta
+		 */
 		String login;
+		
+		/**
+		 * Haslo
+		 */
 		String password;
+		
+		/**
+		 * Zmienna typu Client, ktorej zostaje przypisane konto uzytkownika ktory chce sie zalogowac (jezeli istnieje) 
+		 */
 		Client client;
 		
 		UI.printMessage("Logowanie do konta");
@@ -280,6 +414,20 @@ public class SimpleShopApplication {
 		
 		if(login.equals(client.getLogin()) && client.checkPassword(password))
 			{
+			
+			/**
+			 * Petla operujaca poruszaniem sie po menu konta admina
+			 * <br>
+			 * <ul>
+			 *  <li> 0 - Wylogowanie
+			 *  <li> 1 - Dodanie nowego towaru do oferty sklepu
+			 *  <li> 2 - Wyswietlenie listy wszystkich towarow sklepu
+			 *  <li> 3 - Przejscie do menu edycji magazynu
+			 *  <li> 4 - Przejscie do menu zyskow oraz wyswietlenie listy zyskow sklepu
+			 *  <li> 5 - Wyswietlenie listy wszystkich zarejestrowanych klientow
+			 *  <li> 6 - Zmiana hasla
+			 * </ul>
+			 */
 			while(true){
 				try{
 					switch(UI.enterInt(OWNER_MENU))
@@ -311,18 +459,30 @@ public class SimpleShopApplication {
 					
 					case 4:
 					{
+						/**
+						 * Zmienna przechowujaca int odpowiadajacy pod-menu do ktorego uzytkownik chce przejsc
+						 */
 						int x = UI.enterInt(shop.listEarnings() + "\n" + EARNINGS_MENU + "\n");
 						
+						/**
+						 * Switch case operujacy menu zyskow sklepu
+						 * <br>
+						 * <ul>
+						 *  <li> 0 - Powrot do poprzedniego menu
+						 *  <li> 1 - Trwale wyczyszczenie tablicy zyskow sklepu
+						 * </ul>
+						 */
 						switch(x){
 						case 0:
 						{
 							return;
 						}
 						
+						
 						case 1:
 						{
 							String question;
-							question = UI.enterString("Czy chcesz trwale usunac przedmiot z magazynu? Tak/Nie");
+							question = UI.enterString("Czy chcesz trwale wyczyscic liste zyskow? Tak/Nie");
 							if(question.equals("Tak")){
 								shop.clearEarningsList();
 							} else if(question.equals("Nie"))
@@ -359,6 +519,11 @@ public class SimpleShopApplication {
 		else UI.printMessage("Bledny login lub haslo");
 	}
 	
+	/**
+	 * Metoda tworzaca nowy StringBuiler oraz wypisujaca informacje o koncie uzytkownika
+	 * 
+	 * @param account Konto na temat ktorego maja zostac wypisane informacje
+	 */
 	public String accountInfo(Client account)
 	{
 		StringBuilder sb = new StringBuilder();
@@ -366,8 +531,14 @@ public class SimpleShopApplication {
 		return sb.toString();
 	}
 	
+	/**
+	 * Metoda komunikujaca sie z uzytkownikiem oraz wywolujaca metode dodajaca nowy przedmiot do magazynu
+	 */
 	public void addNewItem()
 	{
+		/**
+		 * Nazwa przedmiotu
+		 */
 		String name;
 		
 		name = UI.enterString("Podaj nazwe przedmiotu");
@@ -382,8 +553,14 @@ public class SimpleShopApplication {
 		
 	}
 	
+	/**
+	 * Metoda komunikujaca sie z uzytkownikiem oraz wywolujaca metode pozwalajaca na zmiane hasla
+	 */
 	public void changePassword(Client user)
 	{
+		/**
+		 * Nowe oraz stare haslo
+		 */
 		String new_password, old_password;
 		try{
 		old_password = UI.enterString("Podaj stare haslo");
@@ -392,13 +569,41 @@ public class SimpleShopApplication {
 		}catch (Exception e){UI.printErrorMessage(e.getMessage());}
 	}
 	
+	/**
+	 * Metoda wyswietlajaca oraz operujaca menu edycji magazynu
+	 */
 	public void editStock()
 	{
+		
+		/**
+		 * Nazwa nowego przedmiotu
+		 */
 		String name;
+		
+		/**
+		 * Nowy przedmiot
+		 */
 		Items item;
+		
+		/**
+		 * Cena nowego przedmiotu
+		 */
 		double cena;
+		
+		/**
+		 * Ilosc przedmiotow danego typu ktora ma zostac dodana do magazynu
+		 */
 		int stock;
 		
+		/**
+		 * Petla operujaca poruszaniem sie po menu konta admina
+		 * <br>
+		 * <ul>
+		 *  <li> 0 - Powrot do poprzedniego menu
+		 *  <li> 1 - Zmiana ceny przedmiotu
+		 *  <li> 2 - Dodanie okreslonej ilosci przedmiotow danego typu do magazynu
+		 *  <li> 3 - Usuniecie przedmiotu z oferty sklepu
+		 */
 		while(true)
 		{
 			try{
@@ -442,6 +647,9 @@ public class SimpleShopApplication {
 			
 			case 3:
 			{
+				/**
+				 * Zmienna przechowujaca odpowiedz uzytkownika
+				 */
 				String question;
 				
 				name = UI.enterString("Podaj nazwe przedmiotu");
