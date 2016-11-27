@@ -1,7 +1,9 @@
 /*
  * Program SimpleShopApplication
  * Autor: Miko³aj Brukiewicz
- * 	Data: 20 pazdziernika 2016
+ * Zajecia: Jezyki Programowania, Sroda TP 11:15 - 13:00
+ * Indeks: 225954
+ * 	Data: 30 pazdziernika 2016
  */
 
 import java.io.Serializable;
@@ -21,6 +23,7 @@ public class Client implements Serializable {
 		this.login = login;
 		password = 0;
 		money = 0;
+		name = "anonim";
 	}
 	
 	public String getName()
@@ -72,4 +75,3 @@ public class Client implements Serializable {
 		return String.format("Konto u¿ytkownika:	%s\nDostêpne œrodki: %.2f z³", name, money);
 	}
 }
-

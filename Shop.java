@@ -1,7 +1,9 @@
 /*
  * Program SimpleShopApplication
  * Autor: Miko³aj Brukiewicz
- * 	Data: 20 pazdziernika 2016
+ * Zajecia: Jezyki Programowania, Sroda TP 11:15 - 13:00
+ * Indeks: 225954
+ * 	Data: 30 pazdziernika 2016
  */
 
 import java.io.FileInputStream;
@@ -18,7 +20,7 @@ public class Shop implements Serializable {
 	private ArrayList<Client> listOfClients = new ArrayList<Client>();
 	private ArrayList<Items> listOfItems = new ArrayList<Items>();
 	private ArrayList<Client> adminInfo = new ArrayList<Client>();
-	
+	private ArrayList<Items> earnings = new ArrayList<Items>();
 	
 	public Items addNewItem(String item_name) throws Exception{
 		if(item_name == null || item_name.equals("")) throw new Exception("Musisz podac nazwe przedmiotu");
@@ -26,6 +28,16 @@ public class Shop implements Serializable {
 		
 		Items newItem = new Items(item_name);
 		listOfItems.add(newItem);
+		return newItem;
+	}
+	
+	public Items addToProfitList(String item_name, int number, double price, String buyer) throws Exception
+	{
+		Items newItem = new Items(item_name);
+		newItem.setBuyer(buyer);
+		newItem.setPrice(price);
+		newItem.addToStock(number);
+		earnings.add(newItem);
 		return newItem;
 	}
 	
@@ -98,6 +110,14 @@ public class Shop implements Serializable {
 		return sb.toString();
 	}
 	
+	public double allEarnings(){
+		double amount = 0;
+		for (Items item : earnings){
+			amount += (item.getPrice()*item.getStock());
+		}
+		return amount;
+	}
+	
 	public String listItems(){
 		StringBuilder sb = new StringBuilder();
 		int n = 0;
@@ -108,15 +128,43 @@ public class Shop implements Serializable {
 		return sb.toString();
 	}
 	
+	public String listEarnings(){
+		StringBuilder sb = new StringBuilder();
+		int n = 0;
+		for (Items x : earnings){
+			if (n++ != 0) sb.append("\n");		
+			sb.append(x.toString());
+			sb.append(" zakupione przez " + x.getBuyer());
+		}
+		sb.append("\nLacznie sklep zarobil "+ allEarnings()+ " zl");
+		return sb.toString();
+	}
+	
+	public void clearEarningsList(){
+		earnings.clear();
+	}
+	
 	void saveClientListToFile(String fileName) throws Exception {
 		ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(fileName));
 		out.writeObject(listOfClients);
 		out.close();
 	}
 	
+	void saveEarningListToFile(String fileName) throws Exception {
+		ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(fileName));
+		out.writeObject(earnings);
+		out.close();
+	}
+	
 	void loadClientListFromFile(String fileName) throws Exception {
 		ObjectInputStream in = new ObjectInputStream(new FileInputStream(fileName));
 		listOfClients = (ArrayList<Client>)in.readObject();
+		in.close();
+	}
+	
+	void loadEarningListFromFile(String fileName) throws Exception {
+		ObjectInputStream in = new ObjectInputStream(new FileInputStream(fileName));
+		earnings = (ArrayList<Items>)in.readObject();
 		in.close();
 	}
 	

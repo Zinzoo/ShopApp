@@ -120,5 +120,3 @@ public class ConsoleUserDialog implements UserDialog {
 
 		
 }
-
-

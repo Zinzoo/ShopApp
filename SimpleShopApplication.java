@@ -1,3 +1,10 @@
+/*
+ * Program SimpleShopApplication
+ * Autor: Miko³aj Brukiewicz
+ * Zajecia: Jezyki Programowania, Sroda TP 11:15 - 13:00
+ * Indeks: 225954
+ * 	Data: 30 pazdziernika 2016
+ */
 
 public class SimpleShopApplication {
 	
@@ -16,42 +23,48 @@ public class SimpleShopApplication {
 			"Data: 21 paziernika 2016 r.\n";
 
 	private static final String SHOP_MENU = 
-			"Sklep Alkoholowy Promil - M E N U   G £ Ó W N E      \n" +
+			"Sklep Alkoholowy Promil - M E N U   G L O W N E      \n" +
 			"1 - Utwórz nowe konto              \n" +
 			"2 - Zaloguj siê do konta           \n" + 
-			"3 - Zaloguj siê jako sprzedawca	\n" +
-			"0 - Zakoñcz program                \n";		
+			"3 - Zaloguj sie jako sprzedawca	\n" +
+			"0 - Zakoncz program                \n";		
 		
 	private static final String ACCOUNT_MENU =
-			"1 - Wp³aæ na konto             \n" +
+			"1 - Wplac na konto             \n" +
 			"2 - Informacje o tym koncie    \n" +
-			"3 - Zmieñ has³o                \n" +
-			"4 - Zmieñ nazwisko w³aœciciela \n" +
-			"5 - Usuñ konto                 \n" +
-			"6 - Przegl¹daj dostêpne alkohole \n" +
-			"7 - zakup wybrany alkohol      \n" +
-			"0 - Wyloguj siê z konta        \n";
+			"3 - Zmien haslo                \n" +
+			"4 - Zmien nazwisko wlasciciela \n" +
+			"5 - Usun konto                 \n" +
+			"6 - Przegladaj dostepne alkohole \n" +
+			"7 - Zakup wybrany alkohol      \n" +
+			"0 - Wyloguj sie z konta        \n";
 	
 	private static final String OWNER_MENU =
-			"Jesteœ zalogowany jako sprzedawca     \n\n" +
+			"Jestes zalogowany jako sprzedawca     \n\n" +
 			"1 - Dodaj nowy towar do magazynu        \n" +
-			"2 - Wyœwietl towary w magazynie         \n" +
+			"2 - Wyswietl towary w magazynie         \n" +
 			"3 - Edycja towarów w magazynie          \n" +
 			"4 - Sprawdz utarg                       \n" +
-			"5 - Wyœwietl wszystkich klientów        \n" +
-			"6 - Zmieñ has³o                         \n" +
-			"0 - Wyloguj siê z konta                 \n";
+			"5 - Wyswietl wszystkich klientów        \n" +
+			"6 - Zmien haslo                         \n" +
+			"0 - Wyloguj sie z konta                 \n";
 
 	private static final String STOCK_MENU =
-			"1 - Zmieñ cenê przedmiotu      \n" +
-			"2 - Uzupe³nij stan magazynu    \n" +
+			"1 - Zmien cene przedmiotu      \n" +
+			"2 - Uzupelnij stan magazynu    \n" +
 			"3 - Wycofaj towar z oferty     \n" +
-			"0 - Wróæ do poprzedniego Menu  \n";
+			"0 - Wróc do poprzedniego Menu  \n";
+	
+	private static final String EARNINGS_MENU =
+			"1 - Wyczysc historie \n" +
+			"0 - Wroc do poprzedniego menu \n";
 	
 	
 	private static final String CLIENT_DATA_FILE_NAME = "SimpleShopClients.BIN";
 	private static final String ITEMS_DATA_FILE_NAME = "SimpleShopItems.BIN";
-
+	private static final String ADMIN_DATA_FILE_NAME = "adminFile.BIN";
+	private static final String PROFIT_DATA_FILE_NAME = "earnings.BIN";
+	
 	private Shop shop = new Shop();
 	
 	public SimpleShopApplication(){
@@ -62,8 +75,9 @@ public class SimpleShopApplication {
 			shop.loadClientListFromFile(CLIENT_DATA_FILE_NAME);
 			UI.printMessage("Klienci zostali wczytani z pliku " + CLIENT_DATA_FILE_NAME);
 			shop.loadItemsListFromFile(ITEMS_DATA_FILE_NAME);
-			UI.printMessage("Lista przedmiotów w magazynie zosta³a wczytana z pliku " + ITEMS_DATA_FILE_NAME);
-			shop.loadAdminInfoFromFile("adminFile.BIN");
+			UI.printMessage("Lista przedmiotów w magazynie zostala wczytana z pliku " + ITEMS_DATA_FILE_NAME);
+			shop.loadAdminInfoFromFile(ADMIN_DATA_FILE_NAME);
+			shop.loadEarningListFromFile(PROFIT_DATA_FILE_NAME);
 			
 		} catch (Exception e) {
 			UI.printErrorMessage(e.getMessage());
@@ -72,9 +86,9 @@ public class SimpleShopApplication {
 		try{
 			if(shop.findAccount("admin") == null)
 			{
-				Client krzysio = new Client("admin");
-				krzysio.setPassword("", "admin1");
-				shop.manualAddClient(krzysio);
+				Client owner = new Client("admin");
+				owner.setPassword("", "admin1");
+				shop.manualAddClient(owner);
 			}
 		}catch (Exception e) {
 			UI.printErrorMessage(e.getMessage());
@@ -88,11 +102,12 @@ public class SimpleShopApplication {
 					try{
 						shop.saveClientListToFile(CLIENT_DATA_FILE_NAME);
 						shop.saveItemsListToFile(ITEMS_DATA_FILE_NAME);
-						shop.saveAdminInfoToFile("adminFile.BIN");
+						shop.saveAdminInfoToFile(ADMIN_DATA_FILE_NAME);
+						shop.saveEarningListToFile(PROFIT_DATA_FILE_NAME);
 					} catch (Exception e){
 						e.getMessage();
 					}
-					UI.printMessage("Program koñczy dzia³anie");
+					UI.printMessage("Program konczy dzialanie");
 					System.exit(0);
 					
 				}
@@ -135,7 +150,7 @@ public class SimpleShopApplication {
 		{
 			pesel = UI.enterString("Podaj login");
 			if(shop.findAccount(pesel)!=null) {
-				UI.printErrorMessage("U¿ytkownik o takim peselu ju¿ istnieje");
+				UI.printErrorMessage("Uzytkownik o takim loginie juz istnieje");
 				break;
 			}
 			password = UI.enterString("Podaj haslo");
@@ -145,7 +160,7 @@ public class SimpleShopApplication {
 			} catch (Exception e){
 				e.getMessage();
 			}
-			UI.printMessage("Uda³o siê");
+			UI.printMessage("Konto zostalo utworzone");
 			break;
 			
 		}
@@ -165,7 +180,7 @@ public class SimpleShopApplication {
 		
 		client = shop.findAccount(login);
 		if(client == null){
-			UI.printMessage("Wprowadzono b³êdne dane");
+			UI.printMessage("Wprowadzono bledne dane");
 			return;
 		}
 		
@@ -178,13 +193,13 @@ public class SimpleShopApplication {
 					{
 					case 0:
 					{
-						UI.printMessage("Nast¹pi wylogowanie z konta");
+						UI.printMessage("Nastapi wylogowanie z konta");
 						return;
 					}
 					case 1:
 					{
 						double new_money;
-						new_money=UI.enterDouble("Ile pieniêdzy chcesz dodaæ do balansu konta?");
+						new_money=UI.enterDouble("Ile pieniedzy chcesz dodac do balansu konta?");
 						client.addMoney(new_money);
 						break;
 					}
@@ -201,14 +216,14 @@ public class SimpleShopApplication {
 					case 4:
 					{
 						String user_name;
-						user_name=UI.enterString("Podaj nazwê u¿ytkownika:\n(Zaleca siê aby by³o to imiê i zazwisko)");
+						user_name=UI.enterString("Podaj nazwe uzytkownika:\n(Zaleca sie aby bylo to imie i nazwisko)");
 						client.setName(user_name);
 						break;
 					}
 					case 5:
 					{
 						String answer;
-						answer = UI.enterString("Czy na pewno chcesz usun¹æ konto? Tak/Nie");
+						answer = UI.enterString("Czy na pewno chcesz usunac konto? Tak/Nie");
 						if(answer.equals("Tak")){
 							shop.deleteAccount(client);
 							return;
@@ -230,18 +245,20 @@ public class SimpleShopApplication {
 						String item_name;
 						Items item;
 						int number;
-						item_name = UI.enterString("Podaj nazwê alkoholu który chcesz kupiæ");
+						item_name = UI.enterString("Podaj nazwe alkoholu który chcesz kupic");
 						item = shop.findItem(item_name);
-						number = UI.enterInt("Podaj iloœæ sztuk alkoholu który chcesz kupiæ");
+						number = UI.enterInt("Podaj ilosc sztuk alkoholu który chcesz kupic");
 						client.loseMoney(item.getPrice()*number);
 						item.sellItem(number);
-						UI.printMessage("Zakup zakoñczony sukcesem");
+						shop.addToProfitList(item_name, number, item.getPrice(), client.getName());
+						UI.printMessage("Zakup zakonczony sukcesem");
+						break;
 						
 					}
 					}
 				}catch (Exception e){ UI.printErrorMessage(e.getMessage()); }
 			}
-		}else	UI.printErrorMessage("B³êdne has³o");
+		}else	UI.printErrorMessage("Bledne haslo");
 	}
 	
 	public void adminLogIn()
@@ -257,7 +274,7 @@ public class SimpleShopApplication {
 		
 		client = shop.findAccount(login);
 		if(client == null){
-			UI.printMessage("Wprowadzono b³êdne dane");
+			UI.printMessage("Wprowadzono bledne dane");
 			return;
 		}
 		
@@ -292,6 +309,34 @@ public class SimpleShopApplication {
 						break;
 					}
 					
+					case 4:
+					{
+						int x = UI.enterInt(shop.listEarnings() + "\n" + EARNINGS_MENU + "\n");
+						
+						switch(x){
+						case 0:
+						{
+							return;
+						}
+						
+						case 1:
+						{
+							String question;
+							question = UI.enterString("Czy chcesz trwale usunac przedmiot z magazynu? Tak/Nie");
+							if(question.equals("Tak")){
+								shop.clearEarningsList();
+							} else if(question.equals("Nie"))
+								break;
+							else{ 
+								UI.printErrorMessage("Nieznana komenda");
+								break;
+							}
+						}
+						
+						}
+						break;
+					}
+					
 					case 5:
 					{
 						UI.printMessage(shop.listAccounts());
@@ -311,7 +356,7 @@ public class SimpleShopApplication {
 				}
 			}
 		}
-		else UI.printMessage("B³êdny login lub has³o");
+		else UI.printMessage("Bledny login lub haslo");
 	}
 	
 	public String accountInfo(Client account)
@@ -325,15 +370,15 @@ public class SimpleShopApplication {
 	{
 		String name;
 		
-		name = UI.enterString("Podaj nazwê przedmiotu");
+		name = UI.enterString("Podaj nazwe przedmiotu");
 		if(shop.findItem(name)!=null)
-			UI.printMessage("Taki przedmiot ju¿ znajduje siê na liœcie");
+			UI.printMessage("Taki przedmiot juz znajduje sie na liscie");
 		try{
 			shop.addNewItem(name);
 		} catch (Exception e){
 			UI.printErrorMessage(e.getMessage());
 		}
-		UI.printMessage("Przedmiot zosta³ pomyœlnie dodany");
+		UI.printMessage("Przedmiot zostal pomyslnie dodany");
 		
 	}
 	
@@ -341,13 +386,13 @@ public class SimpleShopApplication {
 	{
 		String new_password, old_password;
 		try{
-		old_password = UI.enterString("Podaj stare has³o");
-		new_password = UI.enterString("Podaj nowe has³o");
+		old_password = UI.enterString("Podaj stare haslo");
+		new_password = UI.enterString("Podaj nowe haslo");
 		user.setPassword(old_password, new_password);
 		}catch (Exception e){UI.printErrorMessage(e.getMessage());}
 	}
 	
-	public void editStock()      //metoda obs³uguj¹ca edycjê magazynu
+	public void editStock()
 	{
 		String name;
 		Items item;
@@ -366,7 +411,7 @@ public class SimpleShopApplication {
 			
 			case 1:
 			{
-				name = UI.enterString("Podaj nazwê przedmiotu");
+				name = UI.enterString("Podaj nazwe przedmiotu");
 				if(shop.findItem(name) == null)
 				{
 					UI.printErrorMessage("Nie ma takiego przedmiotu");
@@ -374,14 +419,14 @@ public class SimpleShopApplication {
 				}else
 					item = shop.findItem(name);
 				
-				cena = UI.enterDouble("Podaj now¹ cenê");
+				cena = UI.enterDouble("Podaj nowa cene");
 				item.setPrice(cena);
 				break;
 			} 
 				
 			case 2:
 			{
-				name = UI.enterString("Podaj nazwê przedmiotu");
+				name = UI.enterString("Podaj nazwe przedmiotu");
 				if(shop.findItem(name) == null)
 				{
 					UI.printErrorMessage("Nie ma takiego przedmiotu");
@@ -389,7 +434,7 @@ public class SimpleShopApplication {
 				}else
 					item = shop.findItem(name);
 				
-				stock = UI.enterInt("Jak¹ iloœæ towaru chcesz dodaæ do magazynu");
+				stock = UI.enterInt("Jaka ilosc towaru chcesz dodac do magazynu");
 				item.addToStock(stock);
 				break;
 				
@@ -399,14 +444,14 @@ public class SimpleShopApplication {
 			{
 				String question;
 				
-				name = UI.enterString("Podaj nazwê przedmiotu");
+				name = UI.enterString("Podaj nazwe przedmiotu");
 				if(shop.findItem(name) == null)
 				{
 					UI.printErrorMessage("Nie ma takiego przedmiotu");
 					break;
 				}else
 					item = shop.findItem(name);
-				question = UI.enterString("Czy chcesz trwale usun¹æ przedmiot z magazynu? Tak/Nie");
+				question = UI.enterString("Czy chcesz trwale usunac przedmiot z magazynu? Tak/Nie");
 				if(question.equals("Tak")){
 					shop.removeItem(item);
 					break;

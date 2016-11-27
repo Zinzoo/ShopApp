@@ -1,3 +1,11 @@
+/*
+ * Program SimpleShopApplication
+ * Autor: Miko³aj Brukiewicz
+ * Zajecia: Jezyki Programowania, Sroda TP 11:15 - 13:00
+ * Indeks: 225954
+ * 	Data: 30 pazdziernika 2016
+ */
+
 import java.io.Serializable;
 
 public class Items implements Serializable {
@@ -7,6 +15,7 @@ public class Items implements Serializable {
 	private String item_name;
 	private double price;
 	private int in_stock;
+	private String who_bought;
 	
 	
 	Items(String name){
@@ -17,6 +26,10 @@ public class Items implements Serializable {
 	
 	public String getName(){
 		return item_name;
+	}
+	
+	public String getBuyer(){
+		return who_bought;
 	}
 	
 	public double getPrice(){
@@ -32,14 +45,19 @@ public class Items implements Serializable {
 		this.price=price;
 	}
 	
+	public void setBuyer(String buyer)
+	{
+		this.who_bought = buyer;
+	}
+	
 	public void addToStock(int items) throws Exception{
 		if(items<=0) throw new Exception("Ilosc przedmiotow ktore chcesz dodac do magazynu musi byc wieksza od zera");
 		in_stock=items;
 	}
 	
 	public void sellItem(int number) throws Exception{
-		if(number<=0) throw new Exception("Iloœæ alkoholu która chcesz zakupiæ musi byæ wiêksza od zera");
-		if(number>in_stock) throw new Exception("Nie ma takiej iloœci tego przedmiotu w magazynie");
+		if(number<=0) throw new Exception("Ilosc alkoholu która chcesz zakupic musi byc wieksza od zera");
+		if(number>in_stock) throw new Exception("Nie ma takiej ilosci tego przedmiotu w magazynie");
 		in_stock-=number;
 	}
 	
